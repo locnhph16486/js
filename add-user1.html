@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="">
+        Name : <input type="text" id="name"> <br>
+        Email : <input type="email" id="email"> <br>
+        Role : <select name="" id="rolesId"></select> <br>
+        Status : <select name="" id="status">
+                <option value="1">Null</option>
+                <option value="2">Kick Hoat</option>
+        </select> <br>
+        <button type="submit" onclick="SaveNew()">ADD</button>
+    </form>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        function select(){
+            op = {
+                url : 'http://localhost:3000/roles'
+            }
+            axios(op)
+            .then(function(data_res){
+                strOp = ''
+                data_res.data.forEach(function(item){
+                    strOp += '<option value="'+item.id+'">'+item.name+'</option>';
+                })
+                document.querySelector('#rolesId').innerHTML = strOp;
+            })
+        }
+        select()
+        function SaveNew(){
+             name = document.querySelector('#name').value;
+             email = document.querySelector('#email').value;
+             rolesId = document.querySelector('#rolesId').value;
+             status = document.querySelector('#status').value;
+
+            // if(name.length==0){
+            //     alert('Nhap name');
+            //     return false;
+            // }
+            // if(email.length==0){
+            //     alert('Nhap Email');
+            //     return false;
+            // }
+             dataPost = {
+                name : name ,
+                email : email ,
+                rolesId : rolesId ,
+                status : status
+            };
+             url_post = 'http://localhost:3000/users';
+             fetch(url_post, {
+                    method: 'POST', // thêm mới thì dùng post
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(dataPost), // chuyển dữ liệu object trên thành chuỗi json
+                })
+                .then((response) => response.json()) // chuyển kết quả trả về thành json object
+                .then((data) => {
+
+                    // bạn có thể làm gì đó với kết quả cuối cùng này thì làm
+
+                    console.log('Success:', data); // ghi log kết quả hoàn thành
+                })
+                .catch((error) => {
+
+                    console.error('Error:', error); // ghi log nếu xảy ra lỗi
+                });
+        }
+    </script>
+</body>
+</html>
