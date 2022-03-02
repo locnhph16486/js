@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="" id="edit-form">
+        Name : <input type="text" id="name" placeholder="Nhap Ten"> <br>
+        Email : <input type="email" id="email" placeholder="Nhap Email"> <br>
+        Role : <select name="" id="rolesId"></select> <br>
+        Status : <select name="" id="status">
+            <option value="1">NULL</option>
+            <option value="2">Kick hoat</option>
+        </select> <br>
+        <button type="button" onclick="SaveUpdate()">Edit</button>
+    </form>
+    <table border="2">
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+        <tbody id="table-user">
+            
+        </tbody>
+    </table>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        op = {
+            url : 'http://localhost:3000/users?_expand=roles'
+        }
+        axios(op)
+        .then(function(res){
+            console.log(res);
+            strTable = ''
+            res.data.forEach(function(item){
+                strTable += `
+                <tr>
+                    <td>${item.name}</td>
+                    <td>${item.email}</td>
+                    <td>${item.roles.name}</td>
+                    <td>${item.status}</td>
+                    <td>
+                        <button type="submit" onclick="Edit(${item.id})">Edit</button>|
+                        <button type="submit" onclick="Del(${item.id})">Del</button>
+                    </td>
+                </tr>
+                        `;
+            });
+            document.querySelector('#table-user').innerHTML = strTable;
+        })
+        function selectRoles(){
+            opt = {
+                url:'http://localhost:3000/roles'
+                }
+            axios(opt)
+
+            .then(function(data_roles){
+                strOp = ''
+                data_roles.data.forEach(function(item_role){
+                    strOp += '<option value="'+item_role.id+'">'+item_role.name+'</option>'
+                });
+                document.querySelector('#rolesId').innerHTML = strOp;
+            });
+        }
+        selectRoles();
+        function Edit(id){
+            console.log('Edit:'+ id)
+            url_Edit = 'http://localhost:3000/users/'+id;
+            fetch(url_Edit,{
+                method:'GET'
+            }).then(function(res){
+                return res.json();
+            }).then(function(data){
+                document.querySelector('#name').value = data.name;
+                document.querySelector('#email').value = data.email;
+                document.querySelector('#edit-form').setAttribute('id_edit',id)
+            })
+        }
+        function SaveUpdate(){
+            name = document.querySelector('#name').value;
+            email = document.querySelector('#email').value;
+            status = document.querySelector('#status').value;
+            rolesId = document.querySelector('#rolesId').value;
+            dataPost = {
+                name : name ,
+                email : email ,
+                status : status ,
+                rolesId : rolesId
+            };
+            id_edit = document.querySelector('#edit-form').getAttribute('id_edit');
+            url_post = 'http://localhost:3000/users/'+id_edit;
+            fetch(url_post,{
+                method : 'PATCH',
+                headers : {
+                    'Content-Type':'application/json',
+                },
+                body:JSON.stringify(dataPost),
+            })
+            .then((response)=> response.json())
+            .then((data)=>{
+                if(data.id = id_edit)
+                 alert('Done');
+            })
+        }
+        function Del(id){
+            url_Del = 'http://localhost:3000/users/'+id;
+            fetch(url_Del,{
+                method : 'DELETE',
+            }).then(function(res){
+                return res.json();
+            }).then(function(data){
+                location.reload();
+            })
+        }
+    </script>
+</body>
+</html>

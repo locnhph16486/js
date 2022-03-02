@@ -1,0 +1,25 @@
+{
+  "users": [
+    {
+      "name": "best",
+      "email": "loc7102010@gmail.com",
+      "status": "2",
+      "rolesId": "2",
+      "id": 2
+    }
+  ],
+  "roles": [
+    {
+      "id": 1,
+      "name": "admin"
+    },
+    {
+      "id": 2,
+      "name": "member"
+    },
+    {
+      "id": 1,
+      "name": "author"
+    }
+  ]
+}

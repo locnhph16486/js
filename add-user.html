@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="">
+        Name : <input type="text" id="name" placeholder="Nhap Ten"> <br>
+        Email : <input type="email" id="email" placeholder="Nhap Email"> <br>
+        Role : <select name="" id="rolesId"></select> <br>
+        Status : <select name="" id="status">
+            <option value="1">NULL</option>
+            <option value="2">Kick hoat</option>
+        </select> <br>
+        <button type="button" onclick="SaveNew()">ADD</button>
+    </form>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        function selectRoles(){
+            opt = {
+                url:'http://localhost:3000/roles'
+                }
+            axios(opt)
+
+            .then(function(data_roles){
+                strOp = ''
+                data_roles.data.forEach(function(item_role){
+                    strOp += '<option value="'+item_role.id+'">'+item_role.name+'</option>'
+                });
+                document.querySelector('#rolesId').innerHTML = strOp;
+            });
+        }
+        selectRoles();
+        
+
+        function SaveNew(){
+            console.log("done");
+            name = document.querySelector('#name').value;
+            email = document.querySelector('#email').value;
+            status = document.querySelector('#status').value;
+            rolesId = document.querySelector('#rolesId').value;
+            
+            opt_user = {
+                url:'http://localhost:3000/users',
+                method:'POST',
+                data:{
+                    name : name ,
+                    email : email ,
+                    status : status ,
+                    rolesId : rolesId
+                }
+            }
+            axios(opt_user)
+            .then(function(res){
+                console.log(res)
+                if(res.status == 201)
+                    alert('ADD thanh cong');
+            })
+            .catch(function(ex){
+                console.log(ex);
+            });
+            return false;
+        }
+    </script>
+</body>
+</html>
